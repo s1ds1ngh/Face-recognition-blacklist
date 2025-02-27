@@ -1,4 +1,3 @@
-# database/create_database.py
 import sqlite3
 import face_recognition
 import numpy as np

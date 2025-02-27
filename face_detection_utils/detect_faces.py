@@ -1,17 +1,20 @@
-# face_recognition/detect_faces.py
 import cv2
-import face_recognition
 
 
 def detect_face(frame):
     """
-    Detects faces in the given frame and returns their encodings.
+    Detects faces in the given frame using Haar Cascades.
+    Returns face locations as (x, y, w, h).
     """
-    # Convert the frame from BGR to RGB (required by face_recognition)
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    # Load the Haar Cascade classifier for face detection
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-    # Detect face locations and encodings
-    face_locations = face_recognition.face_locations(rgb_frame)
-    face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+    # Convert the frame to grayscale (required by Haar Cascades)
+    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    return face_encodings
+    # Detect faces
+    faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+    # Convert face locations to (top, right, bottom, left) format
+    face_locations = [(y, x + w, y + h, x) for (x, y, w, h) in faces]
+    return face_locations
